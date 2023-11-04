@@ -44,7 +44,7 @@ use leptos_image::*;
 pub fn App(cx: Scope) -> impl IntoView {
     provide_image_context(cx);
 
-    view!{cx,
+    view!{
         // ...
     }
 }
@@ -69,7 +69,7 @@ let root = leptos_options.site_root.clone();
 
 use leptos_image::cache::cache_app_images;
 
-cache_app_images(root, |cx: Scope| view! {cx, <App/>}, 2, || (), || ())
+cache_app_images(root, || view! {<App/>}, 2, || (), || ())
     .await
     .expect("Failed to cache images");
 
@@ -94,7 +94,7 @@ The final router should look something like this!
 let router = Router::new()
         .route("/api/*fn_name", post(leptos_axum::handle_server_fns))
         .leptos_routes(&leptos_options, routes, |cx| {
-            view! { cx,
+            view! {
                 <App/>
             }
         })
@@ -109,7 +109,7 @@ Now you can use the Image Component anywhere in your app!
 ```rust
 #[component]
 pub fn MyPage(cx: Scope) -> impl IntoView {
-    view! { cx,
+    view! {
         <Title text="This Rust thing is pretty great"/>
         <Image
             src="/cute_ferris.png"
@@ -128,4 +128,4 @@ And that's it. You're all set to use the Image Component.
 
 - Images will only be retrieved from routes that are non-dynamic (meaning not `api/post/:id` in Route path).
 - Images can take a few seconds to optimize, meaning first startup of server will be slower.
-- Actix Support is coming soon!
+
