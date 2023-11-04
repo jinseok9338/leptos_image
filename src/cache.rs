@@ -43,7 +43,6 @@ where
         .filter_map(|img| match img.option {
             crate::optimizer::CachedImageOption::Blur(_) => {
                 let path = img.get_file_path_from_root(&root);
-                eprintln!("Caching image: {:?}", path);
 
                 Some((img, path))
             }

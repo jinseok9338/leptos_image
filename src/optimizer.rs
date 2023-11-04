@@ -314,7 +314,7 @@ where
         CreateImageError::IOError(std::io::Error::new(std::io::ErrorKind::Other, e))
     })?;
 
-    let image = image.resize(width, height, image::imageops::FilterType::Nearest);
+    let image = image.resize(width, height, image::imageops::FilterType::CatmullRom);
 
     // Create the WebP encoder for the above image
     let encoder: Encoder = Encoder::from_image(&image).map_err(|e| {
@@ -384,7 +384,6 @@ where
     use base64::{engine::general_purpose, Engine as _};
     let encoded = general_purpose::STANDARD.encode(&*webp);
 
-    let uri = format!("data:image/webp;base64,{}", encoded);
     // Encode the image at a specified quality 0-100
     let uri = format!("data:image/webp;base64,{}", encoded);
 
@@ -397,7 +396,7 @@ where
             <feFuncA type="discrete" tableValues="1 1"/> 
         </feComponentTransfer> 
     </filter> 
-    <image filter="url(#a)" x="0" y="0" height="100%" width="100%" href="{uri}"/>
+
 </svg>
 "#,
     );
@@ -551,9 +550,9 @@ mod optimizer_tests {
         let spec = CachedImage {
             src: "example/image-example-actix/assets/example.svg".to_string(),
             option: CachedImageOption::Resize(Resize {
-                quality: 75,
-                width: 100,
-                height: 100,
+                quality: 100,
+                width: 200,
+                height: 200,
             }),
         };
 
@@ -577,9 +576,9 @@ mod optimizer_tests {
         let spec = CachedImage {
             src: "example/image-example-actix/assets/example.svg".to_string(),
             option: CachedImageOption::Resize(Resize {
-                quality: 75,
-                width: 200,
-                height: 200,
+                quality: 100,
+                width: 261,
+                height: 271,
             }),
         };
 

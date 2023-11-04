@@ -1,5 +1,5 @@
 use leptos::*;
-use leptos_image::{provide_image_context, Image};
+use leptos_image_optimizer::{provide_image_context, Image};
 use leptos_meta::*;
 use leptos_router::*;
 
@@ -53,13 +53,13 @@ pub fn App() -> impl IntoView {
                         <Route
                             path="/1"
                             view=|| {
-                                view! {  <ImageComparison width=500 height=500/> }
+                                view! {  <ImageComparison width=200 height=200/> }
                             }
                         />
                         <Route
                             path="/2"
                             view=|| {
-                                view! {  <ImageComparison width=1000 height=1000/> }
+                                view! {  <ImageComparison width=300 height=300/> }
                             }
                         />
                     </Route>
@@ -111,7 +111,7 @@ fn ImageComparison(width: u32, height: u32) -> impl IntoView {
                     src="/cute_ferris.png"
                     width
                     height
-                    quality=85
+                    quality=100
                     blur=true
                     class="test-image"
                 />
@@ -124,7 +124,7 @@ fn ImageComparison(width: u32, height: u32) -> impl IntoView {
                 <Image
                 width
                 height
-                quality=85
+                quality=100
                 class="test-image"
                 blur=true alt="this is test svg" src="/example.svg"/>
             </div>

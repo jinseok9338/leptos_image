@@ -1473,7 +1473,7 @@ dependencies = [
  "http",
  "leptos",
  "leptos_actix",
- "leptos_image",
+ "leptos_image_optimizer",
  "leptos_meta",
  "leptos_router",
  "tracing",
@@ -1709,8 +1709,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "leptos_image"
-version = "0.1.5"
+name = "leptos_image_optimizer"
+version = "0.1.0"
 dependencies = [
  "actix-web",
  "axum",
@@ -1724,7 +1724,6 @@ dependencies = [
  "leptos_meta",
  "leptos_router",
  "log",
- "nsvg",
  "serde",
  "serde_qs",
  "svg_to_png",
@@ -2032,15 +2031,6 @@ checksum = "d273983c5a657a70a3e8f2a01329822f3b8c8172b73826411a55751e404a0a4a"
 dependencies = [
  "memchr",
  "minimal-lexical",
-]
-
-[[package]]
-name = "nsvg"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0bfa50149c05ca80b01c6a30452084a98d96279f911df8b6840bd18b068cc120"
-dependencies = [
- "cc",
 ]
 
 [[package]]

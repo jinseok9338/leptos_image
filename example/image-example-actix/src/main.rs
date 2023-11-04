@@ -6,7 +6,7 @@ async fn main() -> std::io::Result<()> {
     use image_example_actix::app::*;
     use leptos::*;
     use leptos_actix::{generate_route_list, LeptosRoutes};
-    use leptos_image::*;
+    use leptos_image_optimizer::*;
 
     let conf = get_configuration(None).await.unwrap();
     let addr = conf.leptos_options.site_addr;
