@@ -33,7 +33,8 @@ ssr = [
 
 ## Quick Start
 
-**REQUIRES SSR + AXUM**
+**REQUIRES SSR + AXUM** 
+**(Now supports SSR + Actix-web)**
 
 First add the provider to the base of your Leptos App.
 
@@ -59,7 +60,7 @@ If you have a lot of images, then you should probably only call this function in
 If you don't include this function, then image caching will happen at runtime.
 
 ```rust
-
+// AXUM
 use leptos::*;
 use leptos_image::*;
 
@@ -75,19 +76,35 @@ cache_app_images(root, || view! {<App/>}, 2, || (), || ())
 
 ```
 
-Next add an endpoint to your router that serves the cached images. For now, the endpoint path must be `/cache/image` and is not configurable
-
 ```rust
+// ACTIX_WEB
+async fn main() -> std::io::Result<()> {
+    use actix_files::Files;
+    use actix_web::*;
+    use image_example_actix::app::*;
+    use leptos::*;
+    use leptos_actix::{generate_route_list, LeptosRoutes};
+    use leptos_image::*;
 
-use axum::{routing::{get, post}, Router};
+    let conf = get_configuration(None).await.unwrap();
+    let addr = conf.leptos_options.site_addr;
+    // Generate the list of routes in your Leptos App
+    let routes = generate_route_list(App);
+    println!("listening on http://{}", &addr);
+    let root = conf.leptos_options.site_root.clone();
 
-let router = ...
+    // run cache app images only in server
 
-router.route("/cache/image", get(image_cache_handler));
+    cache_app_images(root, || view! { <App/>}, 2, || (), || ())
+        .await
+        .expect("Failed to cache images");
 
 ```
 
-The final router should look something like this!
+
+
+Next add an endpoint to your router that serves the cached images. For now, the endpoint path must be `/cache/image` and is not configurable
+
 
 ```rust
 
@@ -101,6 +118,32 @@ let router = Router::new()
         // Here's the new route!
         .route("/cache/image", get(image_cache_handler))
         .with_state(leptos_options);
+
+```
+
+```rust
+//ACTIX_WEB
+    HttpServer::new(move || {
+        let leptos_options = &conf.leptos_options;
+        let site_root = &leptos_options.site_root;
+
+        App::new()
+            .app_data(web::Data::new(leptos_options.to_owned()))
+            .route("/api/{tail:.*}", leptos_actix::handle_server_fns())
+            .service(Files::new("/assets", site_root))
+            .leptos_routes(leptos_options.to_owned(), routes.to_owned(), App)
+            .service(Files::new("/pkg", format!("{site_root}/pkg")))
+            // serve other assets from the `assets` directory
+            .route("/cache/image", web::get().to(actix_handler))
+            // serve JS/WASM/CSS from `pkg`
+            // serve the favicon from /favicon.ico
+            .service(favicon)
+
+        //.wrap(middleware::Compress::default())
+    })
+    .bind(&addr)?
+    .run()
+    .await
 
 ```
 
@@ -129,3 +172,6 @@ And that's it. You're all set to use the Image Component.
 - Images will only be retrieved from routes that are non-dynamic (meaning not `api/post/:id` in Route path).
 - Images can take a few seconds to optimize, meaning first startup of server will be slower.
 
+
+
+This project was folked from [leptos_image](https://github.com/nicoburniske/leptos_image)
